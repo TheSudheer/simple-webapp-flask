@@ -1,5 +1,34 @@
-FROM ubuntu:20.04
-RUN apt-get update && apt-get install -y python3 python3-pip
-RUN pip3 install flask
-COPY app.py /opt/
-ENTRYPOINT FLASK_APP=/opt/app.py flask run --host=0.0.0.0 --port=8080
+# Stage 1: Build Stage
+FROM python:3.9-slim as builder
+
+# Set the working directory in the build container
+WORKDIR /webapp
+
+# Copy only the requirements file to leverage Docker cache
+COPY requirements.txt .
+
+# Install dependencies in the build stage
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Stage 2: Runtime Stage
+FROM python:3.9-slim
+
+# Set the working directory in the runtime container
+WORKDIR /webapp
+
+# Copy application code from the host
+COPY . .
+
+# Copy only necessary parts from the build stage (e.g., dependencies)
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Expose port 8080
+EXPOSE 8080
+
+# Run the application using Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+
