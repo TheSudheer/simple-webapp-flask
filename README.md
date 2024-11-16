@@ -89,7 +89,7 @@ You can test the following routes after running the application:
 
 - **Welcome Message**:  
   ```
-  http://<IP>:5000
+  http://<IP>:8080
   ```
   Expected Output:  
   ```
@@ -98,7 +98,7 @@ You can test the following routes after running the application:
 
 - **Dynamic Message**:  
   ```
-  http://<IP>:5000/how%20are%20you
+  http://<IP>:8080/how%20are%20you
   ```
   Expected Output:  
   ```
