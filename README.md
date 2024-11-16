@@ -1,6 +1,8 @@
 
 # **Simple Web Application**
 
+Note: This repository was forked from KodeKloud. The original repository has been modified with changes to the Dockerfile and added improvements.
+
 This is a simple web application built with [Python Flask](http://flask.pocoo.org/) and [MySQL](https://www.mysql.com/) database. 
 
 This repository now uses a completely rewritten **Dockerfile** to containerize the application effectively. The updated Dockerfile leverages **multi-stage builds** for better optimization and performance. 
