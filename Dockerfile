@@ -1,5 +1,5 @@
 # Stage 1: Build Stage
-FROM python:3.9-slim as builder
+FROM python:3.9-slim AS builder
 
 # Set the working directory in the build container
 WORKDIR /webapp
@@ -7,10 +7,12 @@ WORKDIR /webapp
 # Copy only the requirements file to leverage Docker cache
 COPY requirements.txt .
 
-# Install dependencies in the build stage
+# Install dependencies in the build stage 
 RUN apt-get update && \
     pip install --no-cache-dir -r requirements.txt && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    pip install gunicorn && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Stage 2: Runtime Stage
 FROM python:3.9-slim
@@ -18,7 +20,7 @@ FROM python:3.9-slim
 # Set the working directory in the runtime container
 WORKDIR /webapp
 
-# Copy application code from the host
+# Copy the application code from the host
 COPY . .
 
 # Copy only necessary parts from the build stage (e.g., dependencies)
